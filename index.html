@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taika Dictionary from YOBA </title>
+    <link rel="stylesheet" href="libs/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+   
+</head>
+
+
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-container" id="logoContainer" title="Click to upload logo">
+                        <img id="customLogo" src="" alt="Logo" style="display: none;">
+                        <i class="fas fa-book-open" id="defaultIcon"></i>
+                    </div>
+                    <h1>Taika Dictionary</h1>
+                    <input type="file" id="logoInput" accept="image/*" style="display: none;">
+                </div>
+                <div class="header-actions">
+                    <div class="stats">
+                        <!-- Stats here -->
+                    </div>
+                    <div class="theme-switcher" id="themeSwitcher" title="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Navigation Menu -->
+    <nav class="nav-menu">
+        <div class="nav-container">
+            <button class="mobile-nav-toggle" id="mobileNavToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#lexicon" class="nav-link active" data-section="lexicon"><i class="fas fa-book"></i> Lexicon</a></li>
+                <li><a href="#grammar" class="nav-link" data-section="grammar"><i class="fas fa-language"></i> Grammar</a></li>
+                <li><a href="#about-language" class="nav-link" data-section="about-language"><i class="fas fa-info-circle"></i> About Language</a></li>
+                <li><a href="#about-founder" class="nav-link" data-section="about-founder"><i class="fas fa-user"></i> About Founder</a></li>
+                <li><a href="#license" class="nav-link" data-section="license"><i class="fas fa-certificate"></i> License</a></li>
+            </ul>
+            <div class="data-actions" style="display: flex; gap: 15px; align-items: center;">
+               
+                </div>
+                
+                <div class="import-menu">
+                    <button class="btn btn-success" id="importMenuBtn" style="background: var(--success); border: none;">
+                        <i class="fas fa-upload"></i> Import
+                    </button>
+                    <div class="import-dropdown" id="importDropdown">
+                        <label for="importCsv" class="import-option"><i class="fas fa-file-csv"></i> Import from CSV
+                            <input type="file" id="importCsv" accept=".csv" style="display: none;">
+                        </label>
+                        <label for="importExcel" class="import-option"><i class="fas fa-file-excel"></i> Import from Excel
+                            <input type="file" id="importExcel" accept=".xlsx,.xls" style="display: none;">
+                        </label>
+                        <label for="importJson" class="import-option"><i class="fas fa-file-code"></i> Import from JSON
+                            <input type="file" id="importJson" accept=".json" style="display: none;">
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="export-menu">
+                    <button class="btn btn-primary" id="exportMenuBtn">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <div class="export-dropdown" id="exportDropdown">
+                        <a href="#" id="exportCsv"><i class="fas fa-file-csv"></i> Export to CSV</a>
+                        <a href="#" id="exportExcel"><i class="fas fa-file-excel"></i> Export to Excel</a>
+                        <a href="#" id="exportJson"><i class="fas fa-file-code"></i> Export to JSON</a>
+                        <a href="#" id="exportPdf"><i class="fas fa-file-pdf"></i> Export to PDF</a>
+                        <a href="#" id="exportAnki"><i class="fas fa-layer-group"></i> Export to Anki (.apkg)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="container">
+        <!-- Lexicon Section -->
+        <section class="content-section active" id="lexicon-section">
+            <div class="section-header">
+                <h2 class="section-title">Lexicon Management</h2>
+                <p class="section-description">Manage your conlang vocabulary with advanced features to prevent duplicates and track word evolution.</p>
+            </div>
+            
+            <div class="stats-bar" style="display: flex; justify-content: space-around; text-align: center; margin-bottom: 20px; padding: 15px; background: var(--surface); border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07);">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalWords">0</div>
+                    <div class="stat-label">Words</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalNouns">0</div>
+                    <div class="stat-label">Nouns</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalVerbs">0</div>
+                    <div class="stat-label">Verbs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalAdjectives">0</div>
+                    <div class="stat-label">Adjectives</div>
+                </div>
+            </div>
+
+        <div class="search-bar">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search for words, meanings, tags...">
+            <button class="btn btn-primary" id="searchBtn"><i class="fas fa-search"></i> Search</button>
+            <button class="btn btn-success" id="addWordBtn"><i class="fas fa-plus"></i> Add Word</button>
+        </div>
+        
+        <div class="controls">
+            <div class="filter-group">
+                <label for="typeFilter">Filter by type:</label>
+                <select id="typeFilter" class="filter-select">
+                    <option value="all">All Types</option>
+                    <option value="noun">Noun</option>
+                    <option value="verb">Verb</option>
+                    <option value="adjective">Adjective</option>
+                    <option value="adverb">Adverb</option>
+                    <option value="pronoun">Pronoun</option>
+                    <option value="preposition">Preposition</option>
+                    <option value="conjunction">Conjunction</option>
+                    <option value="interjection">Interjection</option>
+                </select>
+                <button class="btn btn-secondary" id="clearFiltersBtn" style="padding: 8px 15px;">Clear</button>
+            </div>
+            <div class="filter-group">
+                <label for="sortSelect">Sort by:</label>
+                <select id="sortSelect" class="filter-select">
+                    <option value="alphabetical">Alphabetical</option>
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                </select>
+            </div>
+            <div class="view-switcher">
+                <button id="cardViewBtn" class="active" title="Card View"><i class="fas fa-th-large"></i></button>
+                <button id="listViewBtn" title="List View"><i class="fas fa-bars"></i></button>
+                <button id="bulkEditBtn" class="btn btn-warning" title="Bulk Edit Mode"><i class="fas fa-check-square"></i> Select</button>
+            </div>
+        </div>
+        
+        <!-- Bulk Edit Toolbar -->
+        <div class="bulk-edit-toolbar" id="bulkEditToolbar" style="display: none; background: var(--warning); color: white; padding: 15px; border-radius: 8px; margin: 15px 0; box-shadow: var(--shadow); animation: slideInRight 0.3s ease-out;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span id="selectedCount">0 selected</span>
+                    <button class="btn btn-sm" id="selectAllBtn" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white;">
+                        <i class="fas fa-check-square"></i> Select All
+                    </button>
+                    <button class="btn btn-sm" id="deselectAllBtn" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white;">
+                        <i class="fas fa-square"></i> Deselect All
+                    </button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="btn btn-sm btn-info" id="bulkEditSelectedBtn" disabled>
+                        <i class="fas fa-edit"></i> Edit Selected
+                    </button>
+                    <button class="btn btn-sm btn-success" id="bulkAddTagBtn" disabled>
+                        <i class="fas fa-tags"></i> Add Tag
+                    </button>
+                    <button class="btn btn-sm btn-danger" id="bulkDeleteBtn" disabled>
+                        <i class="fas fa-trash"></i> Delete Selected
+                    </button>
+                    <button class="btn btn-sm btn-secondary" id="exitBulkModeBtn">
+                        <i class="fas fa-times"></i> Exit
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="wordsContainer" class="cards-container">
+            <!-- Words will be dynamically added here -->
+        </div>
+        
+        <div class="empty-state" id="emptyState">
+            <i class="fas fa-book"></i>
+            <h3>No words found</h3>
+            <p>Your dictionary is empty. Start by adding a new word!</p>
+        </div>
+        
+            <div class="pagination" id="pagination"></div>
+        </section>
+        
+        <!-- Grammar Section -->
+        <section class="content-section" id="grammar-section">
+            <div class="section-header">
+                <h2 class="section-title">Grammar Overview</h2>
+                <p class="section-description">Document and organize the grammatical rules and structures of your conlang.</p>
+            </div>
+            
+            <div class="grammar-container">
+                <div class="grammar-card">
+                    <h3><i class="fas fa-align-left"></i> Word Order</h3>
+                    <p>Define the basic word order patterns in your language (SVO, SOV, VSO, etc.)</p>
+                    <textarea class="form-control" placeholder="Describe word order patterns..." rows="4"></textarea>
+                </div>
+                
+                <div class="grammar-card">
+                    <h3><i class="fas fa-layer-group"></i> Morphology</h3>
+                    <p>Document how words are formed and modified in your language.</p>
+                    <textarea class="form-control" placeholder="Describe morphological processes..." rows="4"></textarea>
+                </div>
+                
+                <div class="grammar-card">
+                    <h3><i class="fas fa-link"></i> Syntax</h3>
+                    <p>Explain how phrases and sentences are constructed.</p>
+                    <textarea class="form-control" placeholder="Describe syntactic rules..." rows="4"></textarea>
+                </div>
+                
+                <div class="grammar-card">
+                    <h3><i class="fas fa-volume-up"></i> Phonology</h3>
+                    <p>Detail the sound system and phonological processes.</p>
+                    <textarea class="form-control" placeholder="Describe phonological system..." rows="4"></textarea>
+                </div>
+                
+                <div class="grammar-card">
+                    <h3><i class="fas fa-clock"></i> Tense & Aspect</h3>
+                    <p>Define how time and aspect are expressed in your language.</p>
+                    <textarea class="form-control" placeholder="Describe tense and aspect system..." rows="4"></textarea>
+                </div>
+                
+                <div class="grammar-card">
+                    <h3><i class="fas fa-users"></i> Agreement</h3>
+                    <p>Explain how words agree with each other (person, number, gender, etc.)</p>
+                    <textarea class="form-control" placeholder="Describe agreement patterns..." rows="4"></textarea>
+                </div>
+            </div>
+            
+            <div class="grammar-actions" style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-success" id="saveGrammarBtn">
+                    <i class="fas fa-save"></i> Save Grammar Notes
+                </button>
+            </div>
+        </section>
+        
+        <!-- About Language Section -->
+        <section class="content-section" id="about-language-section">
+            <div class="section-header">
+                <h2 class="section-title">About the Taika Language</h2>
+                <p class="section-description">Document the background, history, and characteristics of your constructed language.</p>
+            </div>
+            
+            <div class="grammar-card">
+                <h3><i class="fas fa-globe"></i> Language Overview</h3>
+                <div class="form-group">
+                    <label class="form-label">Language Name</label>
+                    <input type="text" class="form-control" id="languageName" value="Taika" placeholder="Enter language name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Language Family</label>
+                    <input type="text" class="form-control" id="languageFamily" placeholder="e.g., Constructed, Fictional">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" id="languageDescription" rows="6" placeholder="Describe your language's purpose, inspiration, and key characteristics..."></textarea>
+                </div>
+            </div>
+            
+            <div class="grammar-card">
+                <h3><i class="fas fa-history"></i> Development History</h3>
+                <div class="form-group">
+                    <label class="form-label">Creation Date</label>
+                    <input type="date" class="form-control" id="creationDate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Development Timeline</label>
+                    <textarea class="form-control" id="developmentHistory" rows="6" placeholder="Document the evolution of your language..."></textarea>
+                </div>
+            </div>
+            
+            <div class="grammar-actions" style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-success" id="saveLanguageInfoBtn">
+                    <i class="fas fa-save"></i> Save Language Information
+                </button>
+            </div>
+        </section>
+        
+        <!-- About Founder Section -->
+        <section class="content-section" id="about-founder-section">
+            <div class="section-header">
+                <h2 class="section-title">About the Founder</h2>
+                <p class="section-description">Information about the creator and development team.</p>
+            </div>
+            
+            <div class="grammar-card">
+                <h3><i class="fas fa-user-circle"></i> Creator Information</h3>
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" id="creatorName" placeholder="Enter creator name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Background</label>
+                    <textarea class="form-control" id="creatorBackground" rows="4" placeholder="Share your linguistic background or motivation for creating this language..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contact Information</label>
+                    <input type="email" class="form-control" id="creatorContact" placeholder="Email or website (optional)">
+                </div>
+            </div>
+            
+            <div class="grammar-actions" style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-success" id="saveFounderInfoBtn">
+                    <i class="fas fa-save"></i> Save Founder Information
+                </button>
+            </div>
+        </section>
+        
+        <!-- License Section -->
+        <section class="content-section" id="license-section">
+            <div class="section-header">
+                <h2 class="section-title">License & Legal Information</h2>
+                <p class="section-description">Legal information about the use and distribution of your language and this application.</p>
+            </div>
+            
+            <div class="grammar-card">
+                <h3><i class="fas fa-certificate"></i> Application License</h3>
+                <p>This Taika Dictionary application is open source software released under the MIT License.</p>
+                <pre style="background: var(--background); padding: 15px; border-radius: 6px; font-size: 0.9rem; white-space: pre-wrap;">MIT License
+
+Copyright (c) 2024 Taika Dictionary Project
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.</pre>
+            </div>
+            
+            <div class="grammar-card">
+                <h3><i class="fas fa-language"></i> Taika Language License</h3>
+                <div style="background: var(--background); padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #28a745;">
+                    <h4 style="color: #28a745; margin-bottom: 15px;"><i class="fas fa-creative-commons"></i> Creative Commons Attribution 4.0</h4>
+                    <p><strong>Creator:</strong> Yoba</p>
+                    <p><strong>License:</strong> CC BY 4.0 International</p>
+                    <p>The Taika language is licensed under a Creative Commons Attribution 4.0 International License (CC BY 4.0).</p>
+                    <p>This means you are free to:</p>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>Share</strong> — copy and redistribute the material in any medium or format</li>
+                        <li><strong>Adapt</strong> — remix, transform, and build upon the material</li>
+                        <li><strong>Commercial use</strong> — use for commercial purposes</li>
+                    </ul>
+                    <p><strong>Under the following terms:</strong></p>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>Attribution</strong> — You must give appropriate credit to Yoba, provide a link to the license, and indicate if changes were made.</li>
+                    </ul>
+                    <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" style="color: var(--primary); text-decoration: none;">
+                        <i class="fas fa-external-link-alt"></i> View Full License Details
+                    </a>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Additional Language Usage Notes</label>
+                    <textarea class="form-control" id="customLicense" rows="4" placeholder="Add any additional notes about language usage..."></textarea>
+                </div>
+            </div>
+            
+            <div class="grammar-actions" style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-success" id="saveLicenseInfoBtn">
+                    <i class="fas fa-save"></i> Save License Information
+                </button>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Add/Edit Word Modal -->
+    <div class="modal" id="wordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Add New Word</h2>
+                <button class="close-btn" id="closeModalBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="duplicate-warning" id="duplicateWarning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Duplicate Warning:</strong> A similar word already exists in your lexicon. Please review to avoid duplicates.
+                </div>
+                <form id="wordForm">
+                    <div class="form-group">
+                        <label for="wordInput" class="form-label">Taika Word *</label>
+                        <input type="text" class="form-control" id="wordInput" required placeholder="Enter the word in Taika">
+                    </div>
+                    <div class="form-group">
+                        <label for="lalaScriptInput" class="form-label">Lala Script</label>
+                        <input type="text" class="form-control" id="lalaScriptInput" disabled placeholder="Coming Soon - Lala Script input will be available in future updates" style="background-color: var(--background); color: var(--secondary); cursor: not-allowed;">
+                        <small class="form-text" style="color: var(--secondary); font-style: italic;">The Lala Script input feature is under development and will be available soon.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="pronunciationInput" class="form-label">Pronunciation (IPA)</label>
+                        <input type="text" class="form-control" id="pronunciationInput" placeholder="e.g., /taɪ.kə/">
+                    </div>
+                    <div class="form-group">
+                        <label for="audioInput" class="form-label">Audio Pronunciation</label>
+                        <div class="audio-input-container" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="file" class="form-control" id="audioInput" accept="audio/*" style="flex: 1; min-width: 200px;">
+                            <button type="button" class="btn btn-secondary btn-sm" id="recordAudioBtn" style="white-space: nowrap;">
+                                <i class="fas fa-microphone"></i> Record
+                            </button>
+                            <button type="button" class="btn btn-info btn-sm" id="playAudioBtn" style="white-space: nowrap;" disabled>
+                                <i class="fas fa-play"></i> Play
+                            </button>
+                        </div>
+                        <audio id="audioPreview" style="display: none;"></audio>
+                        <small class="form-text" style="color: var(--secondary);">Upload an audio file or record pronunciation directly</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="typeInput" class="form-label">Part of Speech *</label>
+                        <select class="form-control" id="typeInput" required>
+                            <option value="">Select a type</option>
+                            <option value="noun">Noun</option>
+                            <option value="verb">Verb</option>
+                            <option value="adjective">Adjective</option>
+                            <option value="adverb">Adverb</option>
+                            <option value="pronoun">Pronoun</option>
+                            <option value="preposition">Preposition</option>
+                            <option value="conjunction">Conjunction</option>
+                            <option value="interjection">Interjection</option>
+                            <option value="particle">Particle</option>
+                            <option value="affix">Affix</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="wordClassInput" class="form-label">Word Class *</label>
+                        <select class="form-control" id="wordClassInput" required>
+                            <option value="">Select word class</option>
+                            <option value="standalone-word">Standalone Word</option>
+                            <option value="root-morpheme">Root Morpheme/Noun</option>
+                            <option value="prefix">Prefix</option>
+                            <option value="suffix">Suffix</option>
+                            <option value="particle">Grammatical Particle</option>
+                            <option value="compound">Compound Word</option>
+                            <option value="derived">Derived Word</option>
+                        </select>
+                        <small class="form-text" style="color: var(--secondary);">Indicates how this lexical item functions in Taika</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="definitionInput" class="form-label">Contextual Meaning *</label>
+                        <textarea class="form-control" id="definitionInput" required placeholder="Provide the closest contextual meaning, not direct translation"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInput" class="form-label">Example Sentence</label>
+                        <textarea class="form-control" id="exampleInput"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="notesInput" class="form-label">Notes (etymology, usage, etc.)</label>
+                        <textarea class="form-control" id="notesInput"></textarea>
+                    </div>
+                    
+                    <!-- Morphological Breakdown Section -->
+                    <div class="form-section" style="border-top: 2px solid var(--border); padding-top: 20px; margin-top: 25px;">
+                        <h4 style="color: var(--primary-solid); margin-bottom: 15px;"><i class="fas fa-puzzle-piece"></i> Morphological Breakdown</h4>
+                        <div class="form-group">
+                            <label for="rootWordsInput" class="form-label">Root Words/Morphemes</label>
+                            <input type="text" class="form-control" id="rootWordsInput" placeholder="e.g., bena, wi (separated by commas)">
+                            <small class="form-text" style="color: var(--secondary);">List the root morphemes that make up this word</small>
+                        </div>
+                        <div class="form-row" style="display: flex; gap: 15px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label for="prefixesInput" class="form-label">Prefixes</label>
+                                <input type="text" class="form-control" id="prefixesInput" placeholder="e.g., ka-, re-">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label for="suffixesInput" class="form-label">Suffixes</label>
+                                <input type="text" class="form-control" id="suffixesInput" placeholder="e.g., -wi, -na">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="morphemeBreakdownInput" class="form-label">Complete Morpheme Breakdown</label>
+                            <input type="text" class="form-control" id="morphemeBreakdownInput" placeholder="e.g., bena + wi = benaiwi (knowledge + to.be = knowledgeable)">
+                            <small class="form-text" style="color: var(--secondary);">Show how morphemes combine to create meaning</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Custom Fields Section (Dynamic based on Part of Speech) -->
+                    <div class="form-section" id="customFieldsSection" style="border-top: 2px solid var(--border); padding-top: 20px; margin-top: 25px; display: none;">
+                        <h4 style="color: var(--primary-solid); margin-bottom: 15px;"><i class="fas fa-cogs"></i> Type-Specific Fields</h4>
+                        <div id="customFieldsContainer">
+                            <!-- Dynamic custom fields will be inserted here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Word Relationships Section -->
+                    <div class="form-section" style="border-top: 2px solid var(--border); padding-top: 20px; margin-top: 25px;">
+                        <h4 style="color: var(--primary-solid); margin-bottom: 15px;"><i class="fas fa-link"></i> Related Words & Relationships</h4>
+                        <div class="relationship-container">
+                            <div class="form-group">
+                                <label for="etymologyInput" class="form-label">Etymology/Derived From</label>
+                                <div class="word-search-container">
+                                    <input type="text" class="form-control word-search-input" id="etymologyInput" placeholder="Search for root words...">
+                                    <div class="word-search-dropdown" id="etymologyDropdown"></div>
+                                    <div class="selected-words" id="etymologySelected"></div>
+                                </div>
+                                <small class="form-text" style="color: var(--secondary);">Words this derives from or is built upon</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="synonymsInput" class="form-label">Synonyms</label>
+                                <div class="word-search-container">
+                                    <input type="text" class="form-control word-search-input" id="synonymsInput" placeholder="Search for synonymous words...">
+                                    <div class="word-search-dropdown" id="synonymsDropdown"></div>
+                                    <div class="selected-words" id="synonymsSelected"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="antonymsInput" class="form-label">Antonyms</label>
+                                <div class="word-search-container">
+                                    <input type="text" class="form-control word-search-input" id="antonymsInput" placeholder="Search for opposite words...">
+                                    <div class="word-search-dropdown" id="antonymsDropdown"></div>
+                                    <div class="selected-words" id="antonymsSelected"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="relatedWordsInput" class="form-label">Conceptually Related</label>
+                                <div class="word-search-container">
+                                    <input type="text" class="form-control word-search-input" id="relatedWordsInput" placeholder="Search for related words...">
+                                    <div class="word-search-dropdown" id="relatedWordsDropdown"></div>
+                                    <div class="selected-words" id="relatedWordsSelected"></div>
+                                </div>
+                                <small class="form-text" style="color: var(--secondary);">Words in the same semantic field or concept area</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 25px;">
+                        <label for="tagInput" class="form-label">Tags (press Enter to add)</label>
+                        <div class="tag-input-container">
+                            <input type="text" id="tagInput" placeholder="e.g., formal, slang, mythology">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                <button type="button" class="btn btn-success" id="saveWordBtn">Save Word</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bulk Edit Modal -->
+    <div class="modal" id="bulkEditModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Bulk Edit Words</h2>
+                <button class="close-btn" id="closeBulkModalBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="bulk-edit-info" style="background: var(--info); color: white; padding: 12px; border-radius: 6px; margin-bottom: 20px;">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Bulk Edit Mode:</strong> Changes will be applied to <span id="bulkEditCount">0</span> selected words. Leave fields empty to keep existing values.
+                </div>
+                <form id="bulkEditForm">
+                    <div class="form-group">
+                        <label for="bulkTypeInput" class="form-label">Part of Speech</label>
+                        <select class="form-control" id="bulkTypeInput">
+                            <option value="">Keep existing values</option>
+                            <option value="noun">Noun</option>
+                            <option value="verb">Verb</option>
+                            <option value="adjective">Adjective</option>
+                            <option value="adverb">Adverb</option>
+                            <option value="pronoun">Pronoun</option>
+                            <option value="preposition">Preposition</option>
+                            <option value="conjunction">Conjunction</option>
+                            <option value="interjection">Interjection</option>
+                            <option value="particle">Particle</option>
+                            <option value="affix">Affix</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bulkWordClassInput" class="form-label">Word Class</label>
+                        <select class="form-control" id="bulkWordClassInput">
+                            <option value="">Keep existing values</option>
+                            <option value="standalone-word">Standalone Word</option>
+                            <option value="root-morpheme">Root Morpheme/Noun</option>
+                            <option value="prefix">Prefix</option>
+                            <option value="suffix">Suffix</option>
+                            <option value="particle">Grammatical Particle</option>
+                            <option value="compound">Compound Word</option>
+                            <option value="derived">Derived Word</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bulkTagsInput" class="form-label">Add Tags</label>
+                        <input type="text" class="form-control" id="bulkTagsInput" placeholder="Enter tags separated by commas">
+                        <small class="form-text" style="color: var(--secondary);">These tags will be added to all selected words</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="bulkNotesAppendInput" class="form-label">Append to Notes</label>
+                        <textarea class="form-control" id="bulkNotesAppendInput" placeholder="This text will be added to the notes of all selected words"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelBulkEditBtn">Cancel</button>
+                <button type="button" class="btn btn-success" id="saveBulkEditBtn">Apply Changes</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bulk Tag Modal -->
+    <div class="modal" id="bulkTagModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Tags to Selected Words</h2>
+                <button class="close-btn" id="closeBulkTagModalBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="bulkOnlyTagsInput" class="form-label">Tags to Add</label>
+                    <input type="text" class="form-control" id="bulkOnlyTagsInput" placeholder="Enter tags separated by commas" required>
+                    <small class="form-text" style="color: var(--secondary);">These tags will be added to <span id="bulkTagCount">0</span> selected words</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelBulkTagBtn">Cancel</button>
+                <button type="button" class="btn btn-success" id="saveBulkTagBtn">Add Tags</button>
+            </div>
+        </div>
+    </div>
+    
+    
+
+    
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+
+<script src="libs/dexie.js"></script>   
+<script src="libs/xlsx.full.min.js"></script>  
+<script src="libs/jspdf.umd.min.js"></script>   
+<script src="capacitor.js"></script>      
+<script src="script.js" defer></script>    
+</body>
+</html>
